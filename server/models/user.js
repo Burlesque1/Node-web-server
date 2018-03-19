@@ -8,16 +8,25 @@ var User = mongoose.model('User', {
     trim: true,
     minlength: 1,
     unique: true,
-    validate:{
+    validate: {
       validator: validator.isEmail,
-      message: '{VALUE} is not a valid email' // no $ ?
+      message: '{VALUE} is not a valid email'
     }
   },
-  password:{
-    
+  password: {
+    type: String,
+    require: true,
+    minlength: 6
   },
-  tokens:[{ // token not available in SQL databse
-
+  tokens: [{
+    access: {
+      type: String,
+      required: true
+    },
+    token: {
+      type: String,
+      required: true
+    }
   }]
 });
 
