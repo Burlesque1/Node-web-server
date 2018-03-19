@@ -60,6 +60,24 @@ UserSchema.methods.generateAuthToken = function () {
   // });
 };
 
+// static means model method not instance method
+UserSchema.statics.findByToken = function (token) {
+  var User = this;
+  var decoded;
+
+  try {
+    decoded = jwt.verify(token, 'abc123');
+  } catch (e) {
+    return Promise.reject();
+  }
+
+  return User.findOne({
+    '_id': decoded._id,
+    'tokens.token': token,
+    'tokens.access': 'auth'
+  });
+};
+
 // cannot add method directly to model
 var User = mongoose.model('User', UserSchema);
 
