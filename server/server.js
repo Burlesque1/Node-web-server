@@ -29,7 +29,7 @@ app.post('/todos', (req, res) => {
     // console.log(doc);
   }, (e) => {
     res.status(400).send(e);
-    console.log(JSON.stringify(e))
+    // console.log(JSON.stringify(e))
   });
 
 });
