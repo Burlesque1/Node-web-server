@@ -15,6 +15,10 @@ var Todo = mongoose.model('Todos', { // only lower case in mongoose?
   completedAt: {
     type: Number,
     default: null
+  },
+  _creator:{
+    type: mongoose.Schema.Types.ObjectId,
+    required: true
   }
 });
 
