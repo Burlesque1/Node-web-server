@@ -50,15 +50,25 @@ UserSchema.methods.generateAuthToken = function () {
 
   // user.tokens.push({access, token});
   user.tokens = user.tokens.concat([{access, token}]); // across different version of Mongoose
-
+  
+  // use return to make this chain inside server.js so here just use return
   return user.save().then(() => {
     return token;
   });
-  // make this chain inside server.js so here just use return
-  // user.save().then(() => {
+ // user.save().then(() => {
   //   return token;
   // }).then((token) => {
   // });
+};
+
+UserSchema.methods.removeToken = function (token) {
+  var user = this;
+
+  return user.update({
+    $pull: {
+      tokens: {token}
+    }
+  });
 };
 
 // static means model method not instance method
