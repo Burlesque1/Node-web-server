@@ -34,8 +34,6 @@ app.use((req, res, next) => {
     next();
 });
 
-
-
 app.get('/', (req, res) => {
     res.render('home.hbs', {
       pageTitle: 'Home Page',
@@ -43,6 +41,10 @@ app.get('/', (req, res) => {
     });
 });
 
+app.post('/user', (req, res) => {
+    console.log(req);
+    res.render('loginpage.hbs');
+})
 app.listen(port, () => {
     console.log(`Started up at port ${port}`);
 })
