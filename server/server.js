@@ -59,24 +59,23 @@ app.get('/todos/:id', authenticate, (req, res) => {
   }, (e) => res.status(400).send());
 })
 
-app.delete('/todos/:id', authenticate, (req, res) => {
+app.delete('/todos/:id', authenticate, async (req, res) => {
   var id = req.params.id;
   if (!ObjectID.isValid(id)) {
     return res.status(404).send();
   }
-
-  Todo.findOneAndRemove({
-    _id: id,
-    _creator: req.user._id
-  }).then((todos) => {
+  try{
+    const todos = await Todo.findOneAndRemove({
+      _id: id,
+      _creator: req.user._id
+    })
     if (!todos) {
       return res.status(404).send();
     }
-
     res.send({todos});
-  }).catch((e) => {
+  } catch(e){
     res.status(400).send();
-  });
+  }
 });
 
 // update operation
