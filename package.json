@@ -1,0 +1,11 @@
+{
+  "name": "r8",
+  "version": "1.0.0",
+  "description": "todo app",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha server/**/*.test.js"
+  },
+  "author": "Burlesque1",
+  "license": "ISC"
+}
