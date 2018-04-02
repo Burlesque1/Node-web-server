@@ -51,6 +51,20 @@ app.get('/', (req, res) => {
     });
 });
 
+app.post('/signup', async (req, res) => {
+    var body = _.pick(req.body, ['email', 'password']);
+    var user = new User(body);
+    // console.log(req.body)
+    try{
+        await user.save();
+        var token = await user.generateAuthToken();
+        res.header('x-auth', token).send(user);
+    } catch(e) {
+        console.log(e)
+        res.status(400).send(e);
+    }
+});
+
 app.post('/room', async (req, res) => {
     var body = _.pick(req.body, ['email', 'password']);
     console.log(body, typeof body)
@@ -66,7 +80,7 @@ app.post('/room', async (req, res) => {
         // res.header('x-auth', token).send(user); // ??????????????
         res.render('room.hbs');
     } catch(e){
-        console.log(e.message);
+        console.log(e.message || e);
         res.status(400).redirect('/');
     }
 })

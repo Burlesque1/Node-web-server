@@ -34,6 +34,15 @@ var UserSchema = new mongoose.Schema({
     }]
 })
 
+// cannot use arrow function here
+// because arrow function dose not bind to "this"
+UserSchema.methods.toJSON = function () { // called by res.send()
+    var user = this;
+    var userObject = user.toObject();
+  
+    return _.pick(userObject, ['_id', 'email']);
+};
+
 UserSchema.methods.generateAuthToken = function() {
     var user = this;
     var access = 'auth';
@@ -64,13 +73,27 @@ UserSchema.statics.findByCredentials = function (email, password) {
             //         resolve(user);
             //     } else {
             //         console.log('no');
-            //         reject();
+            //         reject('password incorrect');
             //     }
             // });
         });
     });
 };
 
+// a mongoose middleware not express middleware that hash password into crypted format
+UserSchema.pre('save', function(next) {
+    var user = this;
+    if(user.isModified('password')) {
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(user.password, salt, (err, hash) => {
+                user.password = hash;
+                next();
+            });
+        });
+    } else {
+        next();
+    }
+});
 
 var User = mongoose.model('User', UserSchema);
 module.exports = {User}
