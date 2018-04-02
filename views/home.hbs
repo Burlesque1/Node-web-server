@@ -7,10 +7,9 @@
   <body>
     {{> header}}
 
-    <form action='/user' method="POST">
-
-      username: <input type="text" name="username" autofocus>    
-      password: <input type="password" name="password">
+    <form action='/room' method="POST">
+      email: <input type="email" name="email" autofocus>    
+      password: <input type="password" name="password" minlength=6>
       <input type="submit" value="log in">
     </form>
     <p>{{screamIt welcomeMessage}}</p>
