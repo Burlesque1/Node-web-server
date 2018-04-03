@@ -14,7 +14,7 @@ var UserSchema = new mongoose.Schema({
     validate: {
       validator: validator.isEmail,
       message: '{VALUE} is not a valid email',
-      isAsync: true // the original method has been depreciated
+      isAsync: true // the original method in video has been depreciated
     }
   },
   password: {
@@ -55,10 +55,6 @@ UserSchema.methods.generateAuthToken = function () {
   return user.save().then(() => {
     return token;
   });
- // user.save().then(() => {
-  //   return token;
-  // }).then((token) => {
-  // });
 };
 
 UserSchema.methods.removeToken = function (token) {
@@ -93,8 +89,8 @@ UserSchema.statics.findByCredentials = function (email, password) {
   var User = this;
 
   return User.findOne({email}).then((user) => {
-    if (!user) {
-      return Promise.reject();
+    if(!user){
+        return Promise.reject('no record found');
     }
 
     return new Promise((resolve, reject) => {
@@ -103,10 +99,12 @@ UserSchema.statics.findByCredentials = function (email, password) {
         if (res) {
           resolve(user);
         } else {
-          reject();
+          reject('password incorrect');
         }
       });
     });
+  }, (e) => {
+    return e;
   });
 };
 
