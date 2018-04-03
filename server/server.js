@@ -33,7 +33,7 @@ hbs.registerHelper('screamIt', (text) => {
 // });
 
 // static serves static files and uses complete path
-// public should include pages except index.html
+// public set index.html as '/' by default
 app.use(express.static(__dirname + '/public'))
 app.use(bodyParser.urlencoded({extended: true}));
 // app.use((req, res, next) => {
