@@ -7,6 +7,9 @@
     "start": "node server/server.js",
     "test": "mocha server/**/*.test.js"
   },
+  "engines": {
+    "node": "8.9.3"
+  },
   "author": "Burlesque1",
   "license": "ISC",
   "dependencies": {
