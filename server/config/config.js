@@ -7,5 +7,5 @@ if(env === 'development' || env === 'test'){
         process.env[key] = envConfig[key];
     })
 } else {
-    process.env[JWT_SECRET] = "dsfasgfda123afasfsa32132";
+    process.env["JWT_SECRET"] = "dsfasgfda123afasfsa32132";
 }
