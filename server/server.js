@@ -51,6 +51,13 @@ app.get('/', (req, res) => {
     });
 });
 
+app.get('/signup', (req, res) => {
+    res.render('signup.hbs', {
+      pageTitle: 'Sign-up Page',
+      welcomeMessage: 'Welcome to my website'
+    });
+});
+
 app.post('/signup', async (req, res) => {
     var body = _.pick(req.body, ['email', 'password']);
     var user = new User(body);

@@ -3,6 +3,7 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const moment = require('moment');
 
 var UserSchema = new mongoose.Schema({
     email:{
@@ -31,7 +32,11 @@ var UserSchema = new mongoose.Schema({
             type: String,
             required: true
         }
-    }]
+    }],
+    createdAt: {
+        type: String,
+        default: null
+    }
 })
 
 // cannot use arrow function here
@@ -49,6 +54,7 @@ UserSchema.methods.generateAuthToken = function() {
     var token = jwt.sign({_id: user._id.toHexString(), access}, process.env.JWT_SECRET).toString();
 
     user.tokens = user.tokens.concat([{access, token}]);
+    user.createdAt = moment().format();
     return user.save().then(() => {
         return token;
     })
