@@ -1,0 +1,16 @@
+/****************************************************************************
+This file is only for development/test purpose.
+Should not be included in production.
+****************************************************************************/
+{
+    "test":{
+        "PORT": 3000,
+        "MONGODB_URI": "mongodb://localhost:27017/ChatAppTest",
+        "JWT_SECRET":"dsfasgfdasfdsafasfsa1231"
+    },
+    "development":{
+        "PORT": 3001,
+        "MONGODB_URI": "mongodb://localhost:27017/ChatApp",
+        "JWT_SECRET":"dsfasgfda123afasfsa12312"
+    }
+}
