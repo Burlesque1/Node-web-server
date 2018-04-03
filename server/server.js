@@ -16,17 +16,15 @@ var {User} = require('./models/user');
 const port = process.env.PORT;
 
 var app = express();
-
-// --------------------------------------------------------------------------???
-hbs.registerPartials('C:\\Users\\Omelet\\Desktop\\Node\\R8\\views\\partials');
-// --------------------------------------------------------------------------???
+app.set('views', __dirname + '/views');
+app.set('view engine', 'hbs');
+hbs.registerPartials(__dirname + '/views/partials'); // need full path here
 hbs.registerHelper('getCurrentYear', () => {
     return new Date().getFullYear();
 });
 hbs.registerHelper('screamIt', (text) => {
     return text.toUpperCase();
 });
-app.set('view engine', 'hbs');
 
 
 // views should be put in the same dir with node_modules
