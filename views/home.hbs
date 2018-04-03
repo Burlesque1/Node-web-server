@@ -7,18 +7,17 @@
   <body>
     {{> header}}
 
-    <form action="/room" method="POST">
-      email: <input type="email" name="email" placeholder="e-mail address" autofocus required>    
-      password: <input type="password" name="password" placeholder="password" minlength=6 required>
-      <input type="submit" value="log in">
-    
-    </form>
-    
-    <form action="/signup" method="POST">
-      email: <input type="email" name="email" placeholder="e-mail address" autofocus required>    
-      password: <input type="password" name="password" placeholder="password" minlength=6 required>
-      <input type="submit" value="sign up">
-    </form>
+    <div>
+      <form action="/room" method="POST">
+        email: <input type="email" name="email" placeholder="e-mail address" autofocus required>    
+        password: <input type="password" name="password" placeholder="password" minlength=6 required>
+        <input type="submit" value="log in">
+      </form>
+      <p>
+        New to here?
+        <a href='/signup'>Create an account</a>
+      </p>
+    </div>
       
     <p>{{screamIt welcomeMessage}}</p>
 
