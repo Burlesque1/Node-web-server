@@ -6,4 +6,6 @@ if(env === 'development' || env === 'test'){
     Object.keys(envConfig).forEach((key) => {
         process.env[key] = envConfig[key];
     })
+} else {
+    process.env[JWT_SECRET] = "dsfasgfda123afasfsa32132";
 }
