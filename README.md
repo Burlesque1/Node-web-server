@@ -22,4 +22,4 @@ npm install
 node server/server.js
 ```
 
-5. Open localhost:3000 in browser
+5. Open localhost:3001 in browser
