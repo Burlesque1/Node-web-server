@@ -21,6 +21,7 @@
     "lodash": "^4.17.5",
     "moment": "^2.22.0",
     "mongoose": "^5.0.12",
+    "serve-favicon": "^2.5.0",
     "socket.io": "^2.1.0",
     "validator": "^9.4.1"
   },
