@@ -1,4 +1,4 @@
-class Users {
+class userClass {
     constructor() {
         this.users = [];
     }
@@ -19,6 +19,12 @@ class Users {
     getUser(id) {
         return this.users.filter((user) => user.id === id)[0];
     }
+    getUserID(name) {
+      var user = this.users.filter((user) => user.name === name);
+      if(user.length !== 0){
+        return user[0]["id"];
+      }
+    }
     getUserList(room) {
         var users = this.users.filter((user) => user.room === room);
         var namesArray = users.map((user) => user.name);
@@ -27,4 +33,4 @@ class Users {
     }
 }
 
-module.exports = {Users};
+module.exports = {userClass};

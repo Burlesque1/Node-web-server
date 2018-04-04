@@ -21,10 +21,53 @@ socket.on('disconnect', function(){
 
 socket.on('updateUserList', function (users) {
     var ol = jQuery('<ol></ol>');
+    var sl = jQuery('<select></select>');
   
     users.forEach(function (user) {
       ol.append(jQuery('<li></li>').text(user));
+      sl.append(jQuery('<option></option>').text(user));
+    });
+    
+    jQuery('#users').html(ol);
+    jQuery('#user-list').html(sl);
+});
+
+socket.on('newMessage', function (message) {
+    var formattedTime = moment(message.createdAt).format('h:mm a');
+    var template = jQuery('#message-template').html();
+    var html = Mustache.render(template, {
+      text: message.text,
+      from: message.from,
+      createdAt: formattedTime
     });
   
-    jQuery('#users').html(ol);
+    jQuery('#messages').append(html);
+    // scrollToBottom();
+  });
+
+socket.on('newPrivMessage', function (message) {
+    var formattedTime = moment(message.createdAt).format('h:mm a');
+    var template = jQuery('#message-template-priv').html();
+    var html = Mustache.render(template, {
+        text: message.text,
+        from: message.from,
+        createdAt: formattedTime
+    });
+
+    jQuery('#messages').append(html);
+    // scrollToBottom();
+});
+
+jQuery('#message-form').on('submit', function (e) {
+    e.preventDefault();
+  
+    var messageTextbox = jQuery('[name=message]');
+    var receiver = jQuery( "#user-list option:selected" ).val();
+    console.log(receiver)
+    socket.emit('createMessage', {
+      text: messageTextbox.val(), 
+      receiver,
+    }, function () {
+      messageTextbox.val('')
+    });
 });

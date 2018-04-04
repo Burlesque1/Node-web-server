@@ -10,9 +10,13 @@ const validator = require('validator');
 const path = require('path');
 const favicon = require('serve-favicon');
 
+const {generateMessage, generateLocationMessage} = require('./utils/message');
+const {userClass} = require('./utils/userClass');
+
 var {mongoose} = require('./db/mongoose');
 var {authenticate} = require('./middleware/authenticate');
 var {User} = require('./models/user');
+var people = new userClass();
 
 const port = process.env.PORT;
 const publicPath = path.join(__dirname, '../public');
@@ -109,15 +113,40 @@ io.on('connection', (socket) => {
         }
 
         socket.join(params.room);
-        // users.removeUser(socket.id);
-        // users.addUser(socket.id, params.name, params.room);
+        people.removeUser(socket.id);
+        people.addUser(socket.id, params.name, params.room);
 
-        // io.to(params.room).emit('updateUserList', users.getUserList(params.room));
-        // socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
-        // socket.broadcast.to(prams.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined.`));
+        io.to(params.room).emit('updateUserList', people.getUserList(params.room));
+        socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+        socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined.`));
         callback();
     })
+
+    socket.on('createMessage', (message, callback) => {
+        var user = people.getUser(socket.id);
+        var receiver = people.getUserID(message.receiver);
+        // if (user && isRealString(message.text)) {
+        if(user){
+          if(!receiver) {
+            io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
+          } else {
+            socket.to(receiver).emit('newPrivMessage', generateMessage(user.name, message.text));
+        }
+      }
+        callback();
+      });
+
+    socket.on('disconnect', () => {
+        var user = people.removeUser(socket.id);
+
+        if (user) {
+            io.to(user.room).emit('updateUserList', people.getUserList(user.room));
+            io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left.`));
+        }
+    });
 });
+
+
 
 
 
