@@ -68,20 +68,18 @@ UserSchema.statics.findByCredentials = function (email, password) {
             return Promise.reject('no record found');
         }
         return new Promise((resolve, reject) => {
-            if(password === user.password){
-                resolve(user);
-            } else {
-                reject('password incorrect');
-            }
-            // bcrypt.compare(password, user.password, (err, res) =>{       // ??????????????????????????????
-            //     if(res){
-            //         console.log('yes');
-            //         resolve(user);
-            //     } else {
-            //         console.log('no');
-            //         reject('password incorrect');
-            //     }
-            // });
+            // if(password === user.password){
+            //     resolve(user);
+            // } else {
+            //     reject('password incorrect');
+            // }
+            bcrypt.compare(password, user.password, (err, res) =>{       // ??????????????????????????????
+                if(res){
+                    resolve(user);
+                } else {
+                    reject('password incorrect');
+                }
+            });
         });
     });
 };

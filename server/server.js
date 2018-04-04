@@ -26,16 +26,16 @@ hbs.registerHelper('screamIt', (text) => {
     return text.toUpperCase();
 });
 
-
-// views should be put in the same dir with node_modules
-// app.use((req, res, next) => {
-//     res.render('maintenance.hbs');
-// });
-
 // static serves static files and uses complete path
 // public set index.html as '/' by default
 app.use(express.static(__dirname + '/public'))
 app.use(bodyParser.urlencoded({extended: true}));
+
+// app.use((req, res, next) => {
+//     res.render('maintenance.hbs');
+// });
+
+
 // app.use((req, res, next) => {
 //     var now = new Date().toString();
 //     console.log(`${now} ${req.method} ${req.url}`);
