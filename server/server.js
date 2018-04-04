@@ -21,10 +21,6 @@ var app = express();
 var server = require ('http').Server(app);
 var io =  require('socket.io')(server);
 
-io.on('connection', (socket) => {
-    console.log('New user connected');
-});
-
 app.set('views', publicPath + '/views');
 app.set('view engine', 'hbs');
 hbs.registerPartials(publicPath + '/views/partials'); // need full path here
@@ -75,6 +71,7 @@ app.post('/signup', async (req, res) => {
         await user.save();
         var token = await user.generateAuthToken();
         res.header('x-auth', token).send(user);
+        // res.render('room.hbs');
     } catch(e) {
         console.log(e)
         res.status(400).send(e);
@@ -100,10 +97,27 @@ app.post('/login', async (req, res) => {
     }
 })
 
-// app.get('/chat', (req, res) => {
-//     res.render()
-// });
 
+
+
+io.on('connection', (socket) => {
+    console.log('New user connected');
+
+    socket.on('join', (params, callback) => {
+        if(false){
+
+        }
+
+        socket.join(params.room);
+        // users.removeUser(socket.id);
+        // users.addUser(socket.id, params.name, params.room);
+
+        // io.to(params.room).emit('updateUserList', users.getUserList(params.room));
+        // socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+        // socket.broadcast.to(prams.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined.`));
+        callback();
+    })
+});
 
 
 
