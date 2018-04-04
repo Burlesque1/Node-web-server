@@ -8,9 +8,9 @@
     {{> header}}
 
     <div>
-      <form action="/room" method="POST">
-        email: <input type="email" name="email" placeholder="e-mail address" autofocus required>    
-        password: <input type="password" name="password" placeholder="password" minlength=6 required>
+      <form action="/login" method="POST">
+        email: <input type="email" name="email" placeholder="e-mail address" value="123@123.com" autofocus required>    
+        password: <input type="password" name="password" placeholder="password" value="123456" minlength=6 required>
         <input type="submit" value="log in">
       </form>
       <p>
@@ -22,9 +22,5 @@
     <p>{{screamIt welcomeMessage}}</p>
 
     {{> footer}}
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-      var socket = io(); 
-    </script>
   </body>
 </html>

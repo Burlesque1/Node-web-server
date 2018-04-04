@@ -16,17 +16,20 @@
       </div>
       <div class="form-field">
         <label>Display name</label>
-        <input type="text" name="name" autofocus/>
+        <input type="text" name="name" value="Guest" autofocus/>
       </div>
       <div class="form-field">
         <label>Room name</label>
-        <input type="text" name="room"/>
+        <input type="text" name="room" value="Hello" />
       </div>
       <div class="form-field">
         <button>Join</button>
       </div>
     </form>
   </div>
+  {{!-- search from /public not current dir /views --}}
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/home.js"></script>
 </body>
 
 </html>

@@ -15,18 +15,19 @@ var {authenticate} = require('./middleware/authenticate');
 var {User} = require('./models/user');
 
 const port = process.env.PORT;
+const publicPath = path.join(__dirname, '../public');
 
 var app = express();
 var server = require ('http').Server(app);
 var io =  require('socket.io')(server);
+
 io.on('connection', (socket) => {
     console.log('New user connected');
 });
 
-
-app.set('views', __dirname + '/views');
+app.set('views', publicPath + '/views');
 app.set('view engine', 'hbs');
-hbs.registerPartials(__dirname + '/views/partials'); // need full path here
+hbs.registerPartials(publicPath + '/views/partials'); // need full path here
 hbs.registerHelper('getCurrentYear', () => {
     return new Date().getFullYear();
 });
@@ -80,9 +81,8 @@ app.post('/signup', async (req, res) => {
     }
 });
 
-app.post('/room', async (req, res) => {
+app.post('/login', async (req, res) => {
     var body = _.pick(req.body, ['email', 'password']);
-    console.log(body, typeof body)
     try{
         if(!validator.isEmail(body.email) || body.password.length < 6){
             
@@ -100,7 +100,9 @@ app.post('/room', async (req, res) => {
     }
 })
 
-
+// app.get('/chat', (req, res) => {
+//     res.render()
+// });
 
 
 
