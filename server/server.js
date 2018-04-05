@@ -60,27 +60,29 @@ app.get('/', (req, res) => {
     });
 });
 
-app.get('/signup', (req, res) => {
-    res.render('signup.hbs', {
-      pageTitle: 'Sign-up Page',
-      welcomeMessage: 'Welcome to my website'
+app.route('/signup')
+    .get((req, res) => {
+        res.render('signup.hbs', {
+           pageTitle: 'Sign-up Page',
+            welcomeMessage: 'Welcome to my website'
+        });
+    })
+    .post(async (req, res) => {
+        var body = _.pick(req.body, ['email', 'username', 'password']);
+        var user = new User(body);
+        // console.log(req.body)
+        try{
+            await user.save();
+            var token = await user.generateAuthToken();
+            // res.header('x-auth', token).send(user);
+            res.render('room.hbs', { body }, (err, html) => {
+                res.header('x-auth', token).send(html);
+            });
+        } catch(e) {
+            console.log(e)
+            res.status(400).send(e);
+        }
     });
-});
-
-app.post('/signup', async (req, res) => {
-    var body = _.pick(req.body, ['email', 'password']);
-    var user = new User(body);
-    // console.log(req.body)
-    try{
-        await user.save();
-        var token = await user.generateAuthToken();
-        res.header('x-auth', token).send(user);
-        // res.render('room.hbs');
-    } catch(e) {
-        console.log(e)
-        res.status(400).send(e);
-    }
-});
 
 app.post('/login', async (req, res) => {
     var body = _.pick(req.body, ['email', 'password']);
@@ -93,8 +95,9 @@ app.post('/login', async (req, res) => {
         }
         var user = await User.findByCredentials(body.email, body.password);
         var token = await user.generateAuthToken();
-        // res.header('x-auth', token).send(user); // ??????????????
-        res.render('room.hbs');
+        res.header('x-auth', token).send(user); // ??????????????
+        // res.redirect('room.hbs');
+        // res.render('room.hbs');
     } catch(e){
         console.log(e.message || e);
         res.status(400).redirect('/');
@@ -111,7 +114,6 @@ io.on('connection', (socket) => {
         if(false){
 
         }
-
         socket.join(params.room);
         people.removeUser(socket.id);
         people.addUser(socket.id, params.name, params.room);

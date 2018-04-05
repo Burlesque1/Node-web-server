@@ -3,8 +3,14 @@ var socket = io();
 
 socket.on('connect', function () {
     console.log('connected to server');
-    var params = jQuery.deparam(window.location.search);
-    console.log(params, window.location.search);
+    // var params = jQuery.deparam(window.location.search);
+    
+    var name = jQuery('#uname').text().substr(3);
+    var params = {
+        name, 
+        room: "room"
+    }
+    console.log(typeof params, params)
     socket.emit('join', params, function(err) { // acknowledgement
         if(err) {
             alert(err);
@@ -22,7 +28,7 @@ socket.on('disconnect', function(){
 socket.on('updateUserList', function (users) {
     var ol = jQuery('<ol></ol>');
     var sl = jQuery('<select></select>');
-  
+    sl.append(jQuery('<option></option>').text('All'));
     users.forEach(function (user) {
       ol.append(jQuery('<li></li>').text(user));
       sl.append(jQuery('<option></option>').text(user));

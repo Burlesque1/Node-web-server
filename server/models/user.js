@@ -18,6 +18,13 @@ var UserSchema = new mongoose.Schema({
             isAsync: true
         }
     },
+    username: {
+        type: String,
+        required: true,
+        trim: true,
+        minlength:1,
+        // unique: true
+    },
     password:{
         type: String,
         required: true,
