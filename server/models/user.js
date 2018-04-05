@@ -11,12 +11,19 @@ var UserSchema = new mongoose.Schema({
         required: true,
         trim: true,
         minlength: 1,
-        unique: true,
+        // unique: true,
         validate:{
             validator: validator.isEmail,
             message: '{VALIE} IS NOT A VALID EMAIL',
             isAsync: true
         }
+    },
+    username: {
+        type: String,
+        required: true,
+        trim: true,
+        minlength:1,
+        // unique: true
     },
     password:{
         type: String,

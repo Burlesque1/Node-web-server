@@ -10,23 +10,24 @@ const validator = require('validator');
 const path = require('path');
 const favicon = require('serve-favicon');
 
+const {generateMessage, generateLocationMessage} = require('./utils/message');
+const {userClass} = require('./utils/userClass');
+
 var {mongoose} = require('./db/mongoose');
 var {authenticate} = require('./middleware/authenticate');
 var {User} = require('./models/user');
+var people = new userClass();
 
 const port = process.env.PORT;
+const publicPath = path.join(__dirname, '../public');
 
 var app = express();
 var server = require ('http').Server(app);
 var io =  require('socket.io')(server);
-io.on('connection', (socket) => {
-    console.log('New user connected');
-});
 
-
-app.set('views', __dirname + '/views');
+app.set('views', publicPath + '/views');
 app.set('view engine', 'hbs');
-hbs.registerPartials(__dirname + '/views/partials'); // need full path here
+hbs.registerPartials(publicPath + '/views/partials'); // need full path here
 hbs.registerHelper('getCurrentYear', () => {
     return new Date().getFullYear();
 });
@@ -51,55 +52,112 @@ app.use(favicon(path.join(__dirname, '../public', 'favicon.ico')))
 //     next();
 // });
 
+var aa = function(req, res, next) {
+    console.log('hahaha');
+    next();
+}
 
-app.get('/', (req, res) => {
-    res.render('home.hbs', {
-      pageTitle: 'Home Page',
-      welcomeMessage: 'Welcome to my website'
-    });
-});
-
-app.get('/signup', (req, res) => {
-    res.render('signup.hbs', {
-      pageTitle: 'Sign-up Page',
-      welcomeMessage: 'Welcome to my website'
-    });
-});
-
-app.post('/signup', async (req, res) => {
-    var body = _.pick(req.body, ['email', 'password']);
-    var user = new User(body);
-    // console.log(req.body)
-    try{
-        await user.save();
-        var token = await user.generateAuthToken();
-        res.header('x-auth', token).send(user);
-    } catch(e) {
-        console.log(e)
-        res.status(400).send(e);
-    }
-});
-
-app.post('/room', async (req, res) => {
-    var body = _.pick(req.body, ['email', 'password']);
-    console.log(body, typeof body)
-    try{
-        if(!validator.isEmail(body.email) || body.password.length < 6){
-            
-            // pop up here
-
-            throw new Error('not email or password too short');      
+app.route('/')
+    .get(aa, (req, res) => {
+        res.render('home.hbs', {
+            pageTitle: 'Home Page',
+            welcomeMessage: 'Welcome to my website'
+        });
+    })
+    .post(aa, async (req, res) => {
+        var body = _.pick(req.body, ['email', 'password']);
+        try{
+            if(!validator.isEmail(body.email) || body.password.length < 6){
+                
+                // pop up here
+    
+                throw new Error('not email or password too short');      
+            }
+            var user = await User.findByCredentials(body.email, body.password);
+            var token = await user.generateAuthToken();
+            res.header('x-auth', token).redirect('/room');
+        } catch(e){
+            console.log(e.message || e);
+            res.status(400).redirect('/');
         }
-        var user = await User.findByCredentials(body.email, body.password);
-        var token = await user.generateAuthToken();
-        // res.header('x-auth', token).send(user); // ??????????????
-        res.render('room.hbs');
-    } catch(e){
-        console.log(e.message || e);
-        res.status(400).redirect('/');
-    }
-})
+    })
 
+app.get('/room', authenticate, (req, res) => {
+    var body = {
+        username: "dfsdfa"
+    }
+    console.log(req.session, req.query)
+    res.render('room.hbs', { body }, (err, html) => {
+        res.send(html);
+    });
+});
+
+app.route('/signup')
+    .get((req, res) => {
+        res.render('signup.hbs', {
+           pageTitle: 'Sign-up Page',
+            welcomeMessage: 'Welcome to my website'
+        });
+    })
+    .post(async (req, res) => {
+        var body = _.pick(req.body, ['email', 'username', 'password']);
+        var user = new User(body);
+        // console.log(req.body)
+        try{
+            await user.save();
+            var token = await user.generateAuthToken();
+            // res.render('room.hbs', { body }, (err, html) => {
+            //     res.header('x-auth', token).send(html);
+            // });
+            res.header('x-auth', token).redirect('/room');
+        } catch(e) {
+            console.log(e)
+            res.status(400).send(e);
+        }
+    });
+
+
+io.on('connection', (socket) => {
+    console.log('New user connected');
+
+    socket.on('join', (params, callback) => {
+        if(false){
+
+        }
+        socket.join(params.room);
+        people.removeUser(socket.id);
+        people.addUser(socket.id, params.name, params.room);
+
+        io.to(params.room).emit('updateUserList', people.getUserList(params.room));
+        socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+        socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined.`));
+        callback();
+    })
+
+    socket.on('createMessage', (message, callback) => {
+        var user = people.getUser(socket.id);
+        var receiver = people.getUserID(message.receiver);
+        // if (user && isRealString(message.text)) {
+        if(user){
+          if(!receiver) {
+            io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
+          } else {
+            socket.to(receiver).emit('newPrivMessage', generateMessage(user.name, message.text));
+        }
+      }
+        callback();
+      });
+
+    socket.on('disconnect', () => {
+        console.log('User away')
+        var user = people.removeUser(socket.id);
+
+        if (user) {
+            io.to(user.room).emit('updateUserList', people.getUserList(user.room));
+            io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left.`));
+        }
+    });
+});
 
 
 

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Join | ChatApp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+
+  <body class="centered-form">
+    {{!-- {{> header}}
+
+    <p>{{screamIt welcomeMessage}}</p> --}}
+   
+    <div class="centered-form__form">
+      <form action="/" method="POST">
+        <div class="form-field">
+          <h3>Welcome to the ChatApp<h3>
+        </div>
+        <div class="form-field">
+          <label>E-mail address:</label>
+          <input type="email" name="email" placeholder="e-mail address" value="123@123.com" autofocus required>
+        </div>
+        <div class="form-field">
+          <label>Password</label>
+           <input type="password" name="password" placeholder="password" value="123456" minlength=6 required>
+        </div>
+        <div class="form-field">
+          <button>Join</button>
+        </div>
+        <div class="form-field">
+          <p>
+            New to here? >>
+            <a href='/signup'>Create an account</a>
+          </p>
+        </div>
+        <div class="form-field">
+          {{> footer}}
+        </div>
+      </form>
+    </div>        
+    {{!-- search from /public not current dir /views --}}
+    <script src="/socket.io/socket.io.js"></script>
+  </body>
+</html>
