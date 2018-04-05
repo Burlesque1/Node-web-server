@@ -46,7 +46,6 @@ socket.on('newMessage', function (message) {
       from: message.from,
       createdAt: formattedTime
     });
-  
     jQuery('#messages').append(html);
     // scrollToBottom();
   });

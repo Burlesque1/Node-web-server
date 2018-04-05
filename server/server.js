@@ -52,11 +52,43 @@ app.use(favicon(path.join(__dirname, '../public', 'favicon.ico')))
 //     next();
 // });
 
+var aa = function(req, res, next) {
+    console.log('hahaha');
+    next();
+}
 
-app.get('/', (req, res) => {
-    res.render('home.hbs', {
-      pageTitle: 'Home Page',
-      welcomeMessage: 'Welcome to my website'
+app.route('/')
+    .get(aa, (req, res) => {
+        res.render('home.hbs', {
+            pageTitle: 'Home Page',
+            welcomeMessage: 'Welcome to my website'
+        });
+    })
+    .post(aa, async (req, res) => {
+        var body = _.pick(req.body, ['email', 'password']);
+        try{
+            if(!validator.isEmail(body.email) || body.password.length < 6){
+                
+                // pop up here
+    
+                throw new Error('not email or password too short');      
+            }
+            var user = await User.findByCredentials(body.email, body.password);
+            var token = await user.generateAuthToken();
+            res.header('x-auth', token).redirect('/room');
+        } catch(e){
+            console.log(e.message || e);
+            res.status(400).redirect('/');
+        }
+    })
+
+app.get('/room', authenticate, (req, res) => {
+    var body = {
+        username: "dfsdfa"
+    }
+    console.log(req.session, req.query)
+    res.render('room.hbs', { body }, (err, html) => {
+        res.send(html);
     });
 });
 
@@ -74,37 +106,15 @@ app.route('/signup')
         try{
             await user.save();
             var token = await user.generateAuthToken();
-            // res.header('x-auth', token).send(user);
-            res.render('room.hbs', { body }, (err, html) => {
-                res.header('x-auth', token).send(html);
-            });
+            // res.render('room.hbs', { body }, (err, html) => {
+            //     res.header('x-auth', token).send(html);
+            // });
+            res.header('x-auth', token).redirect('/room');
         } catch(e) {
             console.log(e)
             res.status(400).send(e);
         }
     });
-
-app.post('/login', async (req, res) => {
-    var body = _.pick(req.body, ['email', 'password']);
-    try{
-        if(!validator.isEmail(body.email) || body.password.length < 6){
-            
-            // pop up here
-
-            throw new Error('not email or password too short');      
-        }
-        var user = await User.findByCredentials(body.email, body.password);
-        var token = await user.generateAuthToken();
-        res.header('x-auth', token).send(user); // ??????????????
-        // res.redirect('room.hbs');
-        // res.render('room.hbs');
-    } catch(e){
-        console.log(e.message || e);
-        res.status(400).redirect('/');
-    }
-})
-
-
 
 
 io.on('connection', (socket) => {
@@ -139,6 +149,7 @@ io.on('connection', (socket) => {
       });
 
     socket.on('disconnect', () => {
+        console.log('User away')
         var user = people.removeUser(socket.id);
 
         if (user) {
