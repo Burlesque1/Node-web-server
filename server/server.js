@@ -60,8 +60,8 @@ var aa = function(req, res, next) {
 app.route('/')
     .get(aa, (req, res) => {
         res.render('home.hbs', {
-            pageTitle: 'Home Page',
-            welcomeMessage: 'Welcome to my website'
+            pageTitle: 'test',
+            welcomeMessage: 'Welcome to the ChatApp'
         });
     })
     .post(aa, async (req, res) => {
@@ -146,6 +146,14 @@ io.on('connection', (socket) => {
         }
       }
         callback();
+      });
+
+      socket.on('createLocationMessage', (coords) => {
+        var user = people.getUser(socket.id);
+    
+        if (user) {
+          io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));  
+        }
       });
 
     socket.on('disconnect', () => {
