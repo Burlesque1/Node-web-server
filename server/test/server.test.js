@@ -16,8 +16,8 @@ describe('GET page', () => {
     it('GET /signup should return signup page', (done) => {
         request(app)
             .get('/signup')
-            .expect(200)            
+            .expect(200)      
             .end(done);
-    }) 
+    })   
     
-});
+}); 

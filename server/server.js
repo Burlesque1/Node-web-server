@@ -60,7 +60,7 @@ var aa = function(req, res, next) {
 app.route('/')
     .get(aa, (req, res) => {
         res.render('home.hbs', {
-            pageTitle: 'Join | ChatApp',
+            pageTitle: 'test',
             welcomeMessage: 'Welcome to the ChatApp'
         });
     })
