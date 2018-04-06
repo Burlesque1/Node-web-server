@@ -5,7 +5,7 @@ https://whispering-lake-98853.herokuapp.com/
 
 How to run this app locally
 
-1. Make sure nodeJS and npm installed correctly
+1. Make sure nodeJS and MongoDB installed correctly
 
 2. Clone the repo from github
 ```
@@ -14,12 +14,17 @@ git clone git@github.com:Burlesque1/Node-web-server.git
 
 3. Install package dependencies
 ```
-npm install
+cd Node-web-server && npm install
 ```
 
-4. Start server
+4. Start MongoDB service 
+```
+~/bin/mongod --dbpath=<YOUR DBPATH>
+```
+
+5. Start server
 ```
 node server/server.js
 ```
 
-5. Open localhost:3001 in browser
+6. Open localhost:3001 in browser
