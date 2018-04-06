@@ -2,7 +2,6 @@
 
 var authenticate =  async (req, res, next) => {
     var token = req.header('x-auth');
-    console.log(req.body, '11'); 
   
   // validate uname pwd
 
