@@ -60,8 +60,8 @@ var aa = function(req, res, next) {
 app.route('/')
     .get(aa, (req, res) => {
         res.render('home.hbs', {
-            pageTitle: 'Home Page',
-            welcomeMessage: 'Welcome to my website'
+            pageTitle: 'Join | ChatApp',
+            welcomeMessage: 'Welcome to the ChatApp'
         });
     })
     .post(aa, async (req, res) => {

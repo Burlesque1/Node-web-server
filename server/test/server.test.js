@@ -5,9 +5,19 @@ const request = require('supertest');
 const {app} = require('./../server');
 
 
-describe('GET /', () => {
-    it('should return home page', (done) => {
-        expect(true).toBe(true);
-        done();
+describe('GET page', () => {
+    it('GET / should return home page', (done) => {
+        request(app)
+            .get('/')
+            .expect(200)            
+            .end(done);
     })
+  
+    it('GET /signup should return signup page', (done) => {
+        request(app)
+            .get('/signup')
+            .expect(200)            
+            .end(done);
+    }) 
+    
 });
