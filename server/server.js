@@ -75,22 +75,13 @@ app.route('/')
             }
             var user = await User.findByCredentials(body.email, body.password);
             var token = await user.generateAuthToken();
+            // res.header('x-auth', token).redirect('/room.html');
             res.header('x-auth', token).redirect('/room');
         } catch(e){
             console.log(e.message || e);
             res.status(400).redirect('/');
         }
     })
-
-app.get('/room', authenticate, (req, res) => {
-    var body = {
-        username: "dfsdfa"
-    }
-    console.log(req.session, req.query)
-    res.render('room.hbs', { body }, (err, html) => {
-        res.send(html);
-    });
-});
 
 app.route('/signup')
     .get((req, res) => {
@@ -116,6 +107,15 @@ app.route('/signup')
         }
     });
 
+
+app.get('/room', authenticate, (req, res) => {
+    var body = {
+        username: "dfsdfa"
+    }
+    res.render('room.hbs', { body }, (err, html) => {
+        res.send(html);
+    });
+});
 
 io.on('connection', (socket) => {
     console.log('New user connected');

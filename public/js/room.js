@@ -40,25 +40,39 @@ socket.on('updateUserList', function (users) {
 
 socket.on('newMessage', function (message) {
     var formattedTime = moment(message.createdAt).format('h:mm a');
-    var template = jQuery('#message-template').html();
-    var html = Mustache.render(template, {
+    var template = '<li class="message">' + 
+        '<div class="message__title"><h4>{{from}}</h4>' +
+                '<span>{{createdAt}}</span>' + 
+            '</div>' + 
+            '<div class="message__body">' +
+                '<p>{{text}}</p>' + 
+            '</div>' + 
+        '</li>';
+    var data = {
       text: message.text,
       from: message.from,
       createdAt: formattedTime
-    });
+    };
+    var html = Mustache.render(template, data);
     jQuery('#messages').append(html);
     // scrollToBottom();
   });
 
 socket.on('newPrivMessage', function (message) {
     var formattedTime = moment(message.createdAt).format('h:mm a');
-    var template = jQuery('#message-template-priv').html();
-    var html = Mustache.render(template, {
-        text: message.text,
-        from: message.from,
-        createdAt: formattedTime
-    });
-
+    var template = '<li class="message">' + 
+        '<div class="message__title"><h4>{{from}}</h4>' +
+                '<span>{{createdAt}}</span>' + 
+            '</div>' + 
+            '<div class="message__body">' +
+                '<p>{{text}}</p>' + 
+            '</div>' + 
+        '</li>';
+    var data = {
+      text: message.text,
+      from: message.from,
+      createdAt: formattedTime
+    };
     jQuery('#messages').append(html);
     // scrollToBottom();
 });
