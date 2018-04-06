@@ -148,6 +148,14 @@ io.on('connection', (socket) => {
         callback();
       });
 
+      socket.on('createLocationMessage', (coords) => {
+        var user = people.getUser(socket.id);
+    
+        if (user) {
+          io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));  
+        }
+      });
+
     socket.on('disconnect', () => {
         console.log('User away')
         var user = people.removeUser(socket.id);
