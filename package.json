@@ -9,7 +9,7 @@
     "test-watch": "nodemon --exec \"npm test\""
   },
   "engines": {
-    "node": "8.9.3"
+    "node": "8.11.1"
   },
   "author": "Burlesque1",
   "license": "ISC",
