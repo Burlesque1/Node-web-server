@@ -3,7 +3,7 @@ A basic server using NodeJs. </br>
 https://whispering-lake-98853.herokuapp.com/
 
 
-How to run this app locally
+## How to run this app locally
 
 1. Make sure nodeJS and MongoDB installed correctly
 
