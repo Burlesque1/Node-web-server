@@ -52,19 +52,14 @@ app.use(favicon(path.join(__dirname, '../public', 'favicon.ico')))
 //     next();
 // });
 
-var aa = function(req, res, next) {
-    console.log('hahaha');
-    next();
-}
-
 app.route('/')
-    .get(aa, (req, res) => {
+    .get((req, res) => {
         res.render('home.hbs', {
             pageTitle: 'test',
             welcomeMessage: 'Welcome to the ChatApp'
         });
     })
-    .post(aa, async (req, res) => {
+    .post(async (req, res) => {
         var body = _.pick(req.body, ['email', 'password']);
         try{
             if(!validator.isEmail(body.email) || body.password.length < 6){
@@ -93,7 +88,6 @@ app.route('/signup')
     .post(async (req, res) => {
         var body = _.pick(req.body, ['email', 'username', 'password']);
         var user = new User(body);
-        // console.log(req.body)
         try{
             await user.save();
             var token = await user.generateAuthToken();
@@ -110,8 +104,9 @@ app.route('/signup')
 
 app.get('/room', authenticate, (req, res) => {
     var body = {
-        username: "dfsdfa"
+        username: "123456"
     }
+    console.log(req);
     res.render('room.hbs', { body }, (err, html) => {
         res.send(html);
     });
@@ -166,10 +161,6 @@ io.on('connection', (socket) => {
         }
     });
 });
-
-
-
-
 
 server.listen(port, () => {
     console.log(`Started up at port ${port} at ${moment()}`);

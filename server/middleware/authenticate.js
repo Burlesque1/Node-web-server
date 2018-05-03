@@ -1,22 +1,20 @@
-// var {User} = require('./../models/user');
+var {User} = require('./../models/user');
 
 var authenticate =  async (req, res, next) => {
     var token = req.header('x-auth');
-  
-  // validate uname pwd
-
-  // gentoken
-
-  // var user = await User.findByToken(token);
-  //   req.user = user;
-    req.token = token;
-    req.user = '123';
-    try{
-      next();
-    } catch(e) {
-      res.status(401).send();
-    }
-  
+    next();
+    // User.findByToken(token).then((user) => {
+    //   if (!user) {
+    //     return Promise.reject('no user found!');
+    //   }
+      
+    //   req.user = user;
+    //   req.token = token;
+    //   next();
+    // }).catch((e) => {
+    //   console.log('123', e);
+    //   res.status(401).send();
+    // });
 };
 
 module.exports = {authenticate};

@@ -75,12 +75,7 @@ UserSchema.statics.findByCredentials = function (email, password) {
             return Promise.reject('no record found');
         }
         return new Promise((resolve, reject) => {
-            // if(password === user.password){
-            //     resolve(user);
-            // } else {
-            //     reject('password incorrect');
-            // }
-            bcrypt.compare(password, user.password, (err, res) =>{       // ??????????????????????????????
+            bcrypt.compare(password, user.password, (err, res) =>{
                 if(res){
                     resolve(user);
                 } else {
@@ -90,6 +85,25 @@ UserSchema.statics.findByCredentials = function (email, password) {
         });
     });
 };
+
+// static means model method not instance method
+UserSchema.statics.findByToken = function (token) {
+    var User = this;
+    var decoded;
+  
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (e) {
+      return Promise.reject('verification fail');
+    }
+  
+    return User.findOne({
+      '_id': decoded._id,
+      'tokens.token': token,
+      'tokens.access': 'auth'
+    });
+  };
+
 
 // a mongoose middleware not express middleware that hash password into crypted format
 UserSchema.pre('save', function(next) {

@@ -10,7 +10,6 @@ socket.on('connect', function () {
         name, 
         room: "room"
     }
-    console.log(typeof params, params)
     socket.emit('join', params, function(err) { // acknowledgement
         if(err) {
             alert(err);
