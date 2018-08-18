@@ -1,8 +1,9 @@
 var {User} = require('./../models/user');
 
 var authenticate =  async (req, res, next) => {
-    var token = req.header('x-auth');
+    console.log('require client-side localstorage sends token');
     next();
+    // var token = req.header('x-auth');
     // User.findByToken(token).then((user) => {
     //   if (!user) {
     //     return Promise.reject('no user found!');
@@ -12,8 +13,8 @@ var authenticate =  async (req, res, next) => {
     //   req.token = token;
     //   next();
     // }).catch((e) => {
-    //   console.log('123', e);
-    //   res.status(401).send();
+    //   console.log(e);
+    //   res.status(401).redirect('/');
     // });
 };
 
