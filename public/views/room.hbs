@@ -15,6 +15,9 @@
     <h3 id="uname">Hi! {{body.username}}</h3>
     <h3>People</h3>
     <div id="users"></div>
+    <div class="outside">
+      <button id="log-out">log out</button>
+    </div> 
   </div>
 
   <div class="chat__main">
@@ -52,9 +55,9 @@
         <p>{{text}}</p>
       </div>
     </li>
-  </script>
+  </script> --}}
 
-  <script id="location-message-template" type="text/template">
+  {{!-- <script id="location-message-template" type="text/template">
     <li class="message">
       <div class="message__title">
         <h4>{{from}}</h4>
@@ -67,7 +70,14 @@
       </div>
     </li>
   </script> --}}
-
+  <style>
+  .outside {
+    position: relative;
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+  }
+  </style>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/js/libs/jquery-3.3.1.min.js"></script>
   <script src="/js/libs/moment.js"></script>

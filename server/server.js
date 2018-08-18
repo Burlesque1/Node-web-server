@@ -60,7 +60,8 @@ app.route('/')
             welcomeMessage: 'Welcome to the ChatApp'
         });
     })
-    .post(async (req, res) => {
+
+    app.post('/login', async (req, res) => {
         var body = _.pick(req.body, ['email', 'password']);
         try{
             if(!validator.isEmail(body.email) || body.password.length < 6){

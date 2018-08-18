@@ -111,6 +111,11 @@ jQuery('#message-form').on('submit', function (e) {
     });
 });
 
+var logoutButton = jQuery('#log-out');
+logoutButton.on('click', () => {
+    window.location.href='/';
+});
+
 var locationButton = jQuery('#send-location');
 locationButton.on('click', function () {
   if (!navigator.geolocation) {
