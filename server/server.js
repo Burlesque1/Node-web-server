@@ -70,10 +70,9 @@ app.route('/')
                 throw new Error('not email or password too short');      
             }
             var user = await User.findByCredentials(body.email, body.password);
-            var token = await user.generateAuthToken();
-            console.log('login success!', token);
+            var token = user.tokens[0]['token'];    // get token
             // res.header('x-auth', token).redirect('/room.html');
-            res.header('x-auth', token).redirect('/room');
+            res.header('x-auth', token).redirect('/room/' + token);
         } catch(e){
             console.log(e.message || e);
             res.status(400).redirect('/');
@@ -96,7 +95,7 @@ app.route('/signup')
             // res.render('room.hbs', { body }, (err, html) => {
             //     res.header('x-auth', token).send(html);
             // });
-            res.header('x-auth', token).redirect('/room');
+            res.header('x-auth', token).redirect('/room/' + token);
         } catch(e) {
             console.log(e)
             res.status(400).send(e);
@@ -104,10 +103,8 @@ app.route('/signup')
     });
 
 
-app.get('/room', authenticate, (req, res) => {
-    var body = {
-        username: "123456"
-    }
+app.get('/room/*', authenticate, (req, res) => {
+    var body = req.user;
     res.render('room.hbs', { body }, (err, html) => {
         res.send(html);
     });
