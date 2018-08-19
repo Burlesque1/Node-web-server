@@ -135,7 +135,8 @@ jQuery('#message-form').on('submit', function (e) {
 
 var logoutButton = jQuery('#log-out');
 logoutButton.on('click', () => {
-    window.location.href='/';
+    var name = jQuery('#uname').text().substr(4);
+    window.location.href='/logout/' + name;
 });
 
 var locationButton = jQuery('#send-location');

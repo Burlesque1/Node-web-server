@@ -6,7 +6,7 @@ var authenticate =  async (req, res, next) => {
     // var token = req.header('x-auth');
     User.findByToken(token).then((user) => {
       if (!user) {
-        return Promise.reject('no user found!');
+        return Promise.reject('not authenticated!');
       }
       
       req.user = user;
