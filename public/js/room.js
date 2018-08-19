@@ -5,7 +5,7 @@ socket.on('connect', function () {
     console.log('connected to server');
     
     var name = jQuery('#uname').text().substr(4);
-    console.log(name);
+
     var params = {
         name, 
         room: ""
@@ -25,12 +25,15 @@ socket.on('disconnect', function(){
 })
 
 socket.on('updateUserList', function (users) {
+    var name = jQuery('#uname').text().substr(4);
     var ol = jQuery('<ol></ol>');
     var sl = jQuery('<select></select>');
     sl.append(jQuery('<option></option>').text('All'));
     users.forEach(function (user) {
-      ol.append(jQuery('<li></li>').text(user));
-      sl.append(jQuery('<option></option>').text(user));
+        ol.append(jQuery('<li></li>').text(user));
+        if(user !== name){
+            sl.append(jQuery('<option></option>').text(user));
+        }
     });
     
     jQuery('#users').html(ol);
@@ -122,11 +125,6 @@ jQuery('#message-form').on('submit', function (e) {
   
     var messageTextbox = jQuery('[name=message]');
     var receiver = jQuery( "#user-list option:selected" ).val();
-    if(receiver){
-        // private message
-    } else {
-        // public message
-    }
     socket.emit('createMessage', {
       text: messageTextbox.val(), 
       receiver,

@@ -10,20 +10,31 @@ const validator = require('validator');
 const path = require('path');
 const favicon = require('serve-favicon');
 
-const {generateMessage, generateLocationMessage} = require('./utils/message');
-const {userClass} = require('./utils/userClass');
+const {
+    generateMessage,
+    generateLocationMessage
+} = require('./utils/message');
+const {
+    userClass
+} = require('./utils/userClass');
 
-var {mongoose} = require('./db/mongoose');
-var {authenticate} = require('./middleware/authenticate');
-var {User} = require('./models/user');
+var {
+    mongoose
+} = require('./db/mongoose');
+var {
+    authenticate
+} = require('./middleware/authenticate');
+var {
+    User
+} = require('./models/user');
 var people = new userClass();
 
 const port = process.env.PORT;
 const publicPath = path.join(__dirname, '../public');
 
 var app = express();
-var server = require ('http').Server(app);
-var io =  require('socket.io')(server);
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 
 app.set('views', publicPath + '/views');
 app.set('view engine', 'hbs');
@@ -38,7 +49,9 @@ hbs.registerHelper('screamIt', (text) => {
 // static serves static files and uses complete path
 // public uses index.html prior to get '/'
 app.use(express.static(path.join(__dirname, '../public')));
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 // app.use(bodyParser.json()); 
 app.use(favicon(path.join(__dirname, '../public', 'favicon.ico')))
 
@@ -61,43 +74,43 @@ app.route('/')
         });
     })
 
-    app.post('/login', async (req, res) => {
-        var body = _.pick(req.body, ['email', 'password']);
-        try{
-            if(!validator.isEmail(body.email) || body.password.length < 6){
-                
-                // pop up here
-    
-                throw new Error('not email or password too short');      
-            }
-            var user = await User.findByCredentials(body.email, body.password);
-            var token = user.tokens[0]['token'];    // get token
-            // res.header('x-auth', token).redirect('/room.html');
-            res.header('x-auth', token).redirect('/room/' + token);
-        } catch(e){
-            console.log(e.message || e);
-            res.status(400).redirect('/');
+app.post('/login', async (req, res) => {
+    var body = _.pick(req.body, ['email', 'password']);
+    try {
+        if (!validator.isEmail(body.email) || body.password.length < 6) {
+
+            // pop up here
+
+            throw new Error('not email or password too short');
         }
-    })
+        var user = await User.findByCredentials(body.email, body.password);
+        var token = user.tokens[0]['token']; // get token
+        // res.header('x-auth', token).redirect('/room.html');
+        res.header('x-auth', token).redirect('/room/' + token);
+    } catch (e) {
+        console.log(e.message || e);
+        res.status(400).redirect('/');
+    }
+})
 
 app.route('/signup')
     .get((req, res) => {
         res.render('signup.hbs', {
-           pageTitle: 'Sign-up Page',
+            pageTitle: 'Sign-up Page',
             welcomeMessage: 'Welcome to my website'
         });
     })
     .post(async (req, res) => {
         var body = _.pick(req.body, ['email', 'username', 'password']);
         var user = new User(body);
-        try{
+        try {
             await user.save();
             var token = await user.generateAuthToken();
             // res.render('room.hbs', { body }, (err, html) => {
             //     res.header('x-auth', token).send(html);
             // });
             res.header('x-auth', token).redirect('/room/' + token);
-        } catch(e) {
+        } catch (e) {
             console.log(e)
             res.status(400).send(e);
         }
@@ -106,7 +119,9 @@ app.route('/signup')
 
 app.get('/room/*', authenticate, (req, res) => {
     var body = req.user;
-    res.render('room.hbs', { body }, (err, html) => {
+    res.render('room.hbs', {
+        body
+    }, (err, html) => {
         res.send(html);
     });
 });
@@ -129,24 +144,24 @@ io.on('connection', (socket) => {
         var user = people.getUser(socket.id);
         var receiver = people.getUserID(message.receiver);
         console.log(message, receiver);
-        if(user){
-          if(!receiver) {
-              console.log('public message');
-            io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
-          } else {
-              console.log('private message');
-            socket.to(receiver.id).emit('newPrivMessage', generateMessage(user.name, message.text));
-            socket.emit('sendPrivMessage', generateMessage(receiver.name, message.text));
+        if (user) {
+            if (!receiver) {
+                console.log('public message');
+                io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
+            } else {
+                console.log('private message');
+                socket.to(receiver.id).emit('newPrivMessage', generateMessage(user.name, message.text));
+                socket.emit('sendPrivMessage', generateMessage(receiver.name, message.text));
+            }
         }
-      }
         callback();
-      });
+    });
 
     socket.on('createLocationMessage', (coords) => {
         var user = people.getUser(socket.id);
-    
+
         if (user) {
-          io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));  
+            io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
         }
     });
 
@@ -165,4 +180,6 @@ server.listen(port, () => {
     console.log(`Started up at port ${port} at ${moment()}`);
 })
 
-module.exports = {app};
+module.exports = {
+    app
+};
