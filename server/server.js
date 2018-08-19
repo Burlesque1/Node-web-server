@@ -115,9 +115,6 @@ io.on('connection', (socket) => {
     console.log('New user connected');
 
     socket.on('join', (params, callback) => {
-        if(false){
-
-        }
         socket.join(params.room);
         people.removeUser(socket.id);
         people.addUser(socket.id, params.name, params.room);
@@ -127,28 +124,31 @@ io.on('connection', (socket) => {
         socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined.`));
         callback();
     })
-
+    // io.to() to specific room, io.emit() to every user, socket.broadcast.emit to everyone except sender, socket.emit to a single user
     socket.on('createMessage', (message, callback) => {
         var user = people.getUser(socket.id);
         var receiver = people.getUserID(message.receiver);
-        // if (user && isRealString(message.text)) {
+        console.log(message, receiver);
         if(user){
           if(!receiver) {
+              console.log('public message');
             io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
           } else {
-            socket.to(receiver).emit('newPrivMessage', generateMessage(user.name, message.text));
+              console.log('private message');
+            socket.to(receiver.id).emit('newPrivMessage', generateMessage(user.name, message.text));
+            socket.emit('sendPrivMessage', generateMessage(receiver.name, message.text));
         }
       }
         callback();
       });
 
-      socket.on('createLocationMessage', (coords) => {
+    socket.on('createLocationMessage', (coords) => {
         var user = people.getUser(socket.id);
     
         if (user) {
           io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));  
         }
-      });
+    });
 
     socket.on('disconnect', () => {
         console.log('User away')

@@ -3,12 +3,12 @@ var socket = io();
 
 socket.on('connect', function () {
     console.log('connected to server');
-    // var params = jQuery.deparam(window.location.search);
     
-    var name = jQuery('#uname').text().substr(3);
+    var name = jQuery('#uname').text().substr(4);
+    console.log(name);
     var params = {
         name, 
-        room: "room"
+        room: ""
     }
     socket.emit('join', params, function(err) { // acknowledgement
         if(err) {
@@ -40,7 +40,7 @@ socket.on('updateUserList', function (users) {
 socket.on('newMessage', function (message) {
     var formattedTime = moment(message.createdAt).format('h:mm a');
     var template = '<li class="message">' + 
-        '<div class="message__title"><h4>{{from}}</h4>' +
+        '<div class="message__title"><h4>{{user}}</h4>' +
                 '<span>{{createdAt}}</span>' + 
             '</div>' + 
             '<div class="message__body">' +
@@ -49,7 +49,7 @@ socket.on('newMessage', function (message) {
         '</li>';
     var data = {
       text: message.text,
-      from: message.from,
+      user: message.user,
       createdAt: formattedTime
     };
     var html = Mustache.render(template, data);
@@ -60,7 +60,7 @@ socket.on('newMessage', function (message) {
 socket.on('newPrivMessage', function (message) {
     var formattedTime = moment(message.createdAt).format('h:mm a');
     var template = '<li class="message">' + 
-        '<div class="message__title"><h4>{{from}}</h4>' +
+        '<div class="message__title"><h4>{{user}} whisper to you</h4>' +
                 '<span>{{createdAt}}</span>' + 
             '</div>' + 
             '<div class="message__body">' +
@@ -69,7 +69,27 @@ socket.on('newPrivMessage', function (message) {
         '</li>';
     var data = {
       text: message.text,
-      from: message.from,
+      user: message.user,
+      createdAt: formattedTime
+    };
+    var html = Mustache.render(template, data);
+    jQuery('#messages').append(html);
+    // scrollToBottom();
+});
+
+socket.on('sendPrivMessage', function (message) {
+    var formattedTime = moment(message.createdAt).format('h:mm a');
+    var template = '<li class="message">' + 
+        '<div class="message__title"><h4>you whisper to {{user}}</h4>' +
+                '<span>{{createdAt}}</span>' + 
+            '</div>' + 
+            '<div class="message__body">' +
+                '<p>{{text}}</p>' + 
+            '</div>' + 
+        '</li>';
+    var data = {
+      text: message.text,
+      user: message.user,
       createdAt: formattedTime
     };
     var html = Mustache.render(template, data);
@@ -80,7 +100,7 @@ socket.on('newPrivMessage', function (message) {
 socket.on('newLocationMessage', function (message) {
     var formattedTime = moment(message.createdAt).format('h:mm a');
     var template = '<li class="message">' + 
-        '<div class="message__title"><h4>{{from}}</h4>' +
+        '<div class="message__title"><h4>{{user}}</h4>' +
                 '<span>{{createdAt}}</span>' + 
             '</div>' + 
             '<div class="message__body">' +
@@ -88,7 +108,7 @@ socket.on('newLocationMessage', function (message) {
             '</div>' + 
         '</li>';
     var data = {
-      from: message.from,
+      user: message.user,
       url: message.url,
       createdAt: formattedTime
     };
@@ -102,7 +122,11 @@ jQuery('#message-form').on('submit', function (e) {
   
     var messageTextbox = jQuery('[name=message]');
     var receiver = jQuery( "#user-list option:selected" ).val();
-    console.log(receiver)
+    if(receiver){
+        // private message
+    } else {
+        // public message
+    }
     socket.emit('createMessage', {
       text: messageTextbox.val(), 
       receiver,

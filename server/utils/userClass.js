@@ -22,7 +22,7 @@ class userClass {
     getUserID(name) {
       var user = this.users.filter((user) => user.name === name);
       if(user.length !== 0){
-        return user[0]["id"];
+        return user[0];
       }
     }
     getUserList(room) {
