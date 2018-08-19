@@ -4,12 +4,11 @@ var {generateMessage, generateLocationMessage} = require('./../utils/message');
 
 describe('generateMessage', () => {
     it('should generate correct message object', () => {
-        var from = 'test';
+        var user = 'test';
         var text = 'text';
-        var message = generateMessage(from, text);
-
+        var message = generateMessage(user, text);
         expect(typeof message.createdAt).toBe('number');
-        expect(message).toMatchObject({from, text});
+        expect(message).toMatchObject({user, text});
     });
 });
 
