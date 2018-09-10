@@ -102,7 +102,7 @@ UserSchema.statics.findByToken = function (token) {
     try {
         decoded = jwt.verify(token, process.env.JWT_SECRET);
     } catch (e) {
-        return Promise.reject('verification fail');
+        return Promise.reject('token verification fail');
     }
 
     return User.findOne({
