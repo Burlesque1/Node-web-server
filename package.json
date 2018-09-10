@@ -4,7 +4,7 @@
   "description": "todo app",
   "main": "index.js",
   "scripts": {
-    "start": "node server/server.js && db.sh",
+    "start": "node server/server.js",
     "test": "mocha server/**/*.test.js --exit",
     "test-watch": "nodemon --exec \"npm test\""
   },
