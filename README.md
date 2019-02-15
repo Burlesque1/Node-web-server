@@ -1,5 +1,5 @@
 # Web-Chat-Room-Node  [![Build Status](https://www.travis-ci.org/Burlesque1/Web-Chat-Room-Node.svg?branch=master)](https://www.travis-ci.org/Burlesque1/Web-Chat-Room-Node)
-A basic server using NodeJs. </br>
+A web chatting room building on NodeJs. </br>
 https://whispering-lake-98853.herokuapp.com/
 
 
